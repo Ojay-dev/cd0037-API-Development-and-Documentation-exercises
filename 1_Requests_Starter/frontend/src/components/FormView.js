@@ -19,7 +19,7 @@ class FormView extends Component {
     const [title, author, rating] = this.state;
 
     $.ajax({
-      url: '/books/create', //TODO: update request URL
+      url: '/books', //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',

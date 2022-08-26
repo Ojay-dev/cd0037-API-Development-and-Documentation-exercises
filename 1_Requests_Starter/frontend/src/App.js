@@ -54,7 +54,7 @@ class App extends Component {
     let targetBook = books.find((book) => book.id === id);
 
     $.ajax({
-      url: `/books/${id}/update-rating`, //TODO: update request URL
+      url: `/books/${id}`, //TODO: update request URL
       type: 'PATCH',
       dataType: 'json',
       contentType: 'application/json',
