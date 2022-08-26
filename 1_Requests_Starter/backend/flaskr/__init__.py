@@ -49,7 +49,7 @@ def create_app(test_config=None):
 
         return jsonify(
             {
-                "Success": True,
+                "success": True,
                 "books": formatted_books[start:end],
                 "total_books": len(formatted_books),
             }
@@ -77,7 +77,7 @@ def create_app(test_config=None):
         if error_inserting_db:
             abort(500)
         else:
-            return jsonify({"Success": True})
+            return jsonify({"success": True})
 
     # @TODO: Write a route that will delete a single book.
     #        Response body keys: 'success', 'deleted'(id of deleted book), 'books' and 'total_books'
@@ -99,11 +99,41 @@ def create_app(test_config=None):
         if error:
             abort(500)
         else:
-            return jsonify({"Success": True})
+            return jsonify({"success": True})
 
     # @TODO: Write a route that create a new book.
     #        Response body keys: 'success', 'created'(id of created book), 'books' and 'total_books'
     # TEST: When completed, you will be able to a new book using the form. Try doing so from the last page of books.
     #       Your new book should show up immediately after you submit it at the end of the page.
+    @app.route("/books/create", methods=["POST"])
+    def create_book():
+        error = False
+
+        try:
+            title = request.get_json()["title"]
+            author = request.get_json()["author"]
+            rating = request.get_json()["rating"]
+
+            book = Book(title=title, author=author, rating=rating)
+            book.insert()
+
+        except:
+            book.rollback()
+            error = True
+
+        if error:
+            abort(500)
+        else:
+            books = Book.query.order_by("id").all()
+            formatted_books = [book.format() for book in books]
+
+            return jsonify(
+                {
+                    "success": True,
+                    "created": book.id,
+                    "books": formatted_books,
+                    "total_books": len(books),
+                }
+            )
 
     return app
